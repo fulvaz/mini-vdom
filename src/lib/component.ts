@@ -1,10 +1,22 @@
-export interface IComponnet {
-    render();
-    setState();
+import { VNode } from "lib/vnode";
 
-    // TODO: lifecycle
+export interface IComponnet {
+    render(): VNode;
+    setState();
+    props: any;
+
+    // TODO: lifecycle hooks
 }
 
-export class Component {
+export class Component implements IComponnet {
+    props: any;
+    render(): VNode {
+        throw new Error("Method not implemented.");
+    }    
+    
+    setState() {
+        throw new Error("Method not implemented.");
+    }
+
 
 }

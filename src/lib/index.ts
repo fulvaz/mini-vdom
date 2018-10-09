@@ -1,25 +1,84 @@
-import { VNode } from "lib/vnode";
+import { VNode, VNodeType, IVnode } from "lib/vnode";
+import { BrowserRender } from "lib/browser";
+
+// TODO: children will needs to treat as expression like Array, function
+// TODO: support stateless component
+// transform any types of node to a VNode
+//
+export function h(node: any, props: any, ...children): IVnode {
+    console.log(node);
+
+    if (!node) {
+        return new VNode(VNodeType.TEXT, '', {});
+    }
+
+    switch (typeof node) {
+        case 'function': {
+            // only class will come into this function
+            return new VNode(VNodeType.CLASS, )
+        }
+        case 'object': {
+            if (node instanceof VNode) {
+                
+                parentElement = document.createElement(node.type);
+            } else if (Array.isArray(node)) {
+                
+            }
+            break;
+        }
+        case 'string':
+        case 'number':
+        case 'boolean':
+        case 'symbol': {
+            return new VNode(VNodeType.TEXT, node.toString(), {});
+        }
+        case 'undefined':
+        default: {
+            return new VNode(VNodeType.TEXT, '', {});
+        }
+    }
 
 
-
-// TODO use VNode to represent DOM Nodes
-// children 内可能有textNode
-export function h(type: string, props: any, ...children){
-    console.log(type);
     props = props || {};
+    // TODO: pass props to children
     props.children = children || [];
-    return new VNode(type, props);
+    return new VNode(node, props);
 }
 
-export function render(node: VNode | string, container) {
-    if (typeof node === 'string') {
-        const textNode = document.createTextNode(node);
-        container.appendChild(textNode);
-        return textNode;
+
+// TODO: handle xss issues see https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html
+// TODO: support stateless component ps: stateless component will accept only one arg called props, just pass context's props to it
+
+// will transform vnodes to platform specific content
+// render funcion can only handle node.tag which has no cascade
+export function render(node: IVnode | any, container) {
+    switch(node.type) {
+        case VNodeType.TEXT: {
+            const p = BrowserRender.createTextNode(node.tag);
+            return p;
+        }
+        case VNodeType.ELEMENT: {
+            const p = BrowserRender.createElement(node.tag);
+            return p
+        }
+        case VNodeType.CLASS: {
+            // TODO: instantiate the class with props here, invoke render function, and create a context for the node, pass the context to vnode
+            const p = BrowserRender.createTextNode(node.tag);
+            return p;
+        }
+        default: {
+
+        }
     }
+
+
+
+    let parentElement;
     const children = node.props.children || [];
-    const parentElement = document.createElement(node.type);
-    // TODO: 设置参数
+
+
+    
+
     children.forEach(e => {
         const c = render(e, parentElement);
         parentElement.appendChild(c);

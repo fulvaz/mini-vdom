@@ -1,6 +1,11 @@
 import {h, render} from './lib/index';
 
+class A {}
+
+
+
 const a = (<div id="hei">
+    <A></A>
     <one>a</one>
     <two>b</two>
 </div>)
