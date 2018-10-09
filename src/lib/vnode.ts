@@ -4,6 +4,7 @@ export enum VNodeType {
     TEXT = 0,
     ELEMENT = 1,
     CLASS = 2,
+    STATELESS = 3,
 }
 
 export interface IVnode {
