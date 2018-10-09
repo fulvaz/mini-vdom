@@ -81,7 +81,7 @@ module.exports = {
         /* Advanced resolve configuration (click to show) */
 },
 
-    devtool: "source-map", // enum  // enhance debugging by adding meta info for the browser devtools
+    devtool: "inline-source-map", // enum  // enhance debugging by adding meta info for the browser devtools
     // source-map most detailed at the expense of build speed.
 
     serve: { //object
@@ -103,7 +103,9 @@ module.exports = {
         // ...
     },
     plugins: [
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'src/index.html')
+        }),
         new webpack.HotModuleReplacementPlugin(),
     ],
     // list of additional plugins

@@ -74,7 +74,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "c7312bf1183d07ea3e2f";
+/******/ 	var hotCurrentHash = "7657b5e42d3a68253a61";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -817,7 +817,10 @@ exports.__esModule = true;
 var index_1 = __webpack_require__(/*! ./lib/index */ "./src/lib/index.ts");
 var a = (index_1.h("div", { id: "hei" },
     index_1.h("div", null, "a"),
+    "dadeada",
     index_1.h("div", null, "b")));
+console.log(a);
+console.log(a);
 console.log(a);
 
 
@@ -845,8 +848,11 @@ var React = (function () {
     return React;
 }());
 exports.React = React;
-function h() {
-    var a = 123;
+function h(node, props, children) {
+    if (typeof node === 'string') {
+        return document.createTextNode(node);
+    }
+    return document.createElement(node);
 }
 exports.h = h;
 

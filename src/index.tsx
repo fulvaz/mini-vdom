@@ -1,11 +1,10 @@
-import {h} from './lib/index';
+import {h, render} from './lib/index';
 
 const a = (<div id="hei">
-    <div>a</div>
-    dadeada
-    <div>b</div>
+    <one>a</one>
+    <two>b</two>
 </div>)
 
-console.log(a);
-console.log(a);
+render(a, document.querySelector('#root'));
+
 console.log(a);
