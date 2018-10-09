@@ -3,8 +3,7 @@ import { BrowserRender } from "lib/browser";
 
 // TODO: children will needs to treat as expression like Array, function
 // TODO: support stateless component
-// transform any types of node to a VNode
-//
+// generate an VNode that describe the DOM Tree
 export function h(node: any, props: any, ...children): IVnode {
     console.log(node);
 
@@ -48,9 +47,8 @@ export function h(node: any, props: any, ...children): IVnode {
 
 // TODO: handle xss issues see https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html
 // TODO: support stateless component ps: stateless component will accept only one arg called props, just pass context's props to it
-
-// will transform vnodes to platform specific content
-// render funcion can only handle node.tag which has no cascade
+// TODO: handle events
+// render VNodes to platform specific content
 export function render(node: IVnode | any, container) {
     switch(node.type) {
         case VNodeType.TEXT: {
@@ -63,6 +61,7 @@ export function render(node: IVnode | any, container) {
         }
         case VNodeType.CLASS: {
             // TODO: instantiate the class with props here, invoke render function, and create a context for the node, pass the context to vnode
+            // well, use 'this' of this component as context will be much better
             const p = BrowserRender.createTextNode(node.tag);
             return p;
         }

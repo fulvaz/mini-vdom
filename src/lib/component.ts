@@ -1,6 +1,6 @@
 import { VNode } from "lib/vnode";
 
-export interface IComponnet {
+export interface IComponent {
     render(): VNode;
     setState();
     props: any;
@@ -8,13 +8,17 @@ export interface IComponnet {
     // TODO: lifecycle hooks
 }
 
-export class Component implements IComponnet {
+export class Component implements IComponent {
     props: any;
     render(): VNode {
         throw new Error("Method not implemented.");
     }    
     
+    // TODO: setState!
+    
     setState() {
+        // TODO diff here! do the reconciliation
+        // fiber, pause in reconciliation
         throw new Error("Method not implemented.");
     }
 
