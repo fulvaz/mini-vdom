@@ -7,17 +7,18 @@ export enum VNodeType {
     STATELESS = 3,
 }
 
-export interface IVnode {
+export interface IVNode {
     // well, we need to isolate the props between components.
     context: any;
     type: VNodeType;
-    tag: string;
+    tag: any;
     props: any;
-
+    instance: any;
 }
 
-export class VNode {
-    context
+export class VNode implements IVNode {
+    context: any;
+    instance: any;
     constructor(public type: VNodeType,
         public tag: string,
         public props: any,

@@ -12,10 +12,9 @@ export class Component implements IComponent {
     props: any;
     render(): VNode {
         throw new Error("Method not implemented.");
-    }    
+    }
     
     // TODO: setState!
-    
     setState() {
         // TODO diff here! do the reconciliation
         // fiber, pause in reconciliation
