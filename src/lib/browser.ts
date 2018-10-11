@@ -6,9 +6,11 @@ export interface IRenderer {
 class BrowserRenderClass implements IRenderer{
     public createTextNode(text: string) {
         return document.createTextNode(text)
-    }    
+    }
     public createElement(type: string) {
-        return document.createElement(type);
+        const ele = document.createElement(type);
+        ele.style.display = 'block';
+        return ele;
     }
 }
 

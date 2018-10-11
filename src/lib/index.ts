@@ -7,38 +7,41 @@ import { isClass } from "./utils";
 // generate an VNode that describe the DOM Tree
 // children will transform by this function too
 // node: base types, class, function, object, array, VNode
-export function h(node: any, props: any = {}, ...children): IVNode {
-    if (!node) {
-        return new VNode(VNodeType.TEXT, '', {});
-    }
-
-    if (node instanceof VNode) {
-        return node;
-    }
-
+export function h(node: string | Function, props: any = {}, ...children): IVNode {
+    // capitalied word pass to node will be resolved as variable
     if (children.length !== 0) {
         props.children = children.map(c => {
-            return h(c, props);
+            if (c instanceof VNode) {
+                return c;
+            }
+            switch (typeof c) {
+                case 'function': {
+                    return new VNode(VNodeType.TEXT, node.toString(), {});
+                }
+                case 'object':
+                case 'number':
+                case 'boolean':
+                case 'string': 
+                case 'symbol': {
+                    return new VNode(VNodeType.TEXT, node.toString(), {});
+                }
+                case 'undefined':
+                default: {
+                    return new VNode(VNodeType.TEXT, '', {});
+                }
+            }
         });
     }
 
     switch (typeof node) {
         case 'function': {
             if (isClass(node)) {
-                return new VNode(VNodeType.CLASS, node, props);
-            } else {
-                // for sake, why would someone just pass a function
-                return new VNode(VNodeType.TEXT, node.toString(), {});
+                return new VNode(VNodeType.CLASS, (node as any).name, props);
             }
         }
-        case 'object':
-        case 'string':
-        case 'number':
-        case 'boolean':
-        case 'symbol': {
-            return new VNode(VNodeType.TEXT, node.toString(), {});
+        case 'string': {
+            return new VNode(VNodeType.ELEMENT, (node as string), props);
         }
-        case 'undefined':
         default: {
             return new VNode(VNodeType.TEXT, '', {});
         }
