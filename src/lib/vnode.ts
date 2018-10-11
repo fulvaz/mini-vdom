@@ -1,5 +1,3 @@
-// TODO use VNode to represent DOM Nodes
-// TODO consider props update
 export enum VNodeType {
     TEXT = 0,
     ELEMENT = 1,

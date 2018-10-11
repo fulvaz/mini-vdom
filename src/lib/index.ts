@@ -50,9 +50,6 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
 
 
 // TODO: handle xss issues see https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html
-// TODO: support stateless component ps: stateless component will accept only one arg called props, just pass context's props to it
-// TODO: add attributes
-// TODO: handle events
 // render VNodes to platform specific content
 export function render(node: IVNode, container) {
     switch (node.type) {
@@ -69,8 +66,6 @@ export function render(node: IVNode, container) {
             return p2;
         }
         case VNodeType.CLASS: {
-            // TODO: instantiate the class with props here, invoke render function, and create a context for the node, pass the context to vnode
-            // well, use 'this' of this component as context will be much better
             node.instance = new node.tag(node.props);
             node.context = node.instance;
             // FIXME: may invalid after uglify
@@ -97,21 +92,6 @@ function renderChildren(node: IVNode, container: HTMLElement) {
     return container;
 }
 
-
-export function createElement(type: string, props: any, ...children) {
-    children = children || [];
-    h(type, props, ...children);
-}
-
-export function updateElement(parent, newNode, oldNode, index = 0) {
-    // diff here
-    // if (!oldNode) {
-    //     // TODO: parent插入 newNode
-    // } else (!newNode) {
-    //     // TODO: 删除节点
-    // }
-
-}
 
 // append
 // remove
