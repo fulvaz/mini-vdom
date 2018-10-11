@@ -58,11 +58,15 @@ export function render(node: IVNode, container) {
     switch (node.type) {
         case VNodeType.TEXT: {
             const p = BrowserRender.createTextNode(node.tag);
+            BrowserRender.appendChild(p, container);
             return p;
         }
         case VNodeType.ELEMENT: {
             const p = BrowserRender.createElement(node.tag);
-            return renderChildren(node, p);
+            BrowserRender.appendChild(p, container);
+            let p2 = renderChildren(node, p);
+            p2 = BrowserRender.appendProps(p2, node.props);
+            return p2;
         }
         case VNodeType.CLASS: {
             // TODO: instantiate the class with props here, invoke render function, and create a context for the node, pass the context to vnode
@@ -71,11 +75,14 @@ export function render(node: IVNode, container) {
             node.context = node.instance;
             // FIXME: may invalid after uglify
             const p = BrowserRender.createElement(node.tag.name);
+            BrowserRender.appendChild(p, container);
             const innerVNode = node.instance.render();
             return render(innerVNode, p);
         }
         default: {
-            return BrowserRender.createTextNode('debug: ops, your node is not belong to any type');
+            const p = BrowserRender.createTextNode('debug: ops, your node is not belong to any type');
+            BrowserRender.appendChild(p, container);
+            return p;
         }
     }
     
