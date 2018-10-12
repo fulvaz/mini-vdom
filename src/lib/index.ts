@@ -17,14 +17,14 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
             }
             switch (typeof c) {
                 case 'function': {
-                    return new VNode(VNodeType.TEXT, node.toString(), {});
+                    return new VNode(VNodeType.TEXT, c.toString(), {});
                 }
                 case 'object':
                 case 'number':
                 case 'boolean':
                 case 'string': 
                 case 'symbol': {
-                    return new VNode(VNodeType.TEXT, node.toString(), {});
+                    return new VNode(VNodeType.TEXT, c.toString(), {});
                 }
                 case 'undefined':
                 default: {
@@ -74,10 +74,8 @@ export function render(node: IVNode, container) {
             node.instance = new node.klass(node.props);
             node.context = node.instance;
             // FIXME: may invalid after uglify
-            const p = BrowserRender.createElement(node.tag);
-            BrowserRender.appendChild(p, container);
             const innerVNode = node.instance.render();
-            return render(innerVNode, p);
+            return render(innerVNode, container);
         }
         default: {
             const p = BrowserRender.createTextNode('debug: ops, your node is not belong to any type');

@@ -11,7 +11,6 @@ class BrowserRenderClass implements IRenderer{
     }
     public createElement(type: string) {
         const ele = document.createElement(type);
-        ele.style.display = 'block';
         return ele;
     }
 
