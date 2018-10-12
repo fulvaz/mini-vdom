@@ -7,9 +7,10 @@ import { isClass } from "./utils";
 // generate an VNode that describe the DOM Tree
 // children will transform by this function too
 // node: base types, class, function, object, array, VNode
+// capitalized word pass to node will be resolved as variable
 export function h(node: string | Function, props: any = {}, ...children): IVNode {
-    // capitalized word pass to node will be resolved as variable
-    if (children.length !== 0) {
+    props = props || {};
+    if (children && children.length !== 0) {
         props.children = children.map(c => {
             if (c instanceof VNode) {
                 return c;
@@ -36,7 +37,11 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
     switch (typeof node) {
         case 'function': {
             if (isClass(node)) {
-                return new VNode(VNodeType.CLASS, (node as any).name, props);
+                const vnode = new VNode(VNodeType.CLASS, (node as any).name, props);
+                vnode.klass = node;
+                return vnode;
+            } else {
+                return new VNode(VNodeType.ELEMENT, (node as any).name, props);
             }
         }
         case 'string': {
@@ -61,15 +66,15 @@ export function render(node: IVNode, container) {
         case VNodeType.ELEMENT: {
             const p = BrowserRender.createElement(node.tag);
             BrowserRender.appendChild(p, container);
-            let p2 = renderChildren(node, p);
-            p2 = BrowserRender.appendProps(p2, node.props);
-            return p2;
+            renderChildren(node, p);
+            BrowserRender.appendProps(p, node.props);
+            return p;
         }
         case VNodeType.CLASS: {
-            node.instance = new node.tag(node.props);
+            node.instance = new node.klass(node.props);
             node.context = node.instance;
             // FIXME: may invalid after uglify
-            const p = BrowserRender.createElement(node.tag.name);
+            const p = BrowserRender.createElement(node.tag);
             BrowserRender.appendChild(p, container);
             const innerVNode = node.instance.render();
             return render(innerVNode, p);
@@ -86,8 +91,8 @@ export function render(node: IVNode, container) {
 function renderChildren(node: IVNode, container: HTMLElement) {
     const children = node.props.children || [];
     children.forEach(e => {
-        const c = render(e, node);
-        container.appendChild(c);
+        render(e, container);
+        // container.appendChild(c);
     });
     return container;
 }

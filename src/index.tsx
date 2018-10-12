@@ -1,6 +1,12 @@
 import {h, render} from './lib/index';
 
-class A {}
+class A {
+    render() {
+        return (
+            <p>this is a A</p>
+        )
+    }
+}
 
 
 

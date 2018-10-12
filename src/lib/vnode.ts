@@ -9,12 +9,14 @@ export interface IVNode {
     // well, we need to isolate the props between components.
     context: any;
     type: VNodeType;
-    tag: any;
+    tag: string;
     props: any;
     instance: any;
+    klass: any;
 }
 
 export class VNode implements IVNode {
+    klass: any;
     context: any;
     instance: any;
     constructor(public type: VNodeType,
