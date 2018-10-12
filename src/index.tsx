@@ -1,9 +1,12 @@
 import {h, render} from './lib/index';
+import "babel-polyfill"
+import { Component } from 'lib/component';
+class A extends Component{
 
-class A {
     render() {
+        const {input} = this.props;
         return (
-            <p>this is a A</p>
+            <p>this is a A {input}</p>
         )
     }
 }
@@ -11,7 +14,7 @@ class A {
 
 
 const a = (<div id="hei">
-    <A></A>
+    <A input={'customcc'}></A>
     <one>a</one>
     <two>b</two>
 </div>)

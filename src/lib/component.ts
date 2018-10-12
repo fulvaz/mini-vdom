@@ -10,6 +10,11 @@ export interface IComponent {
 
 export class Component implements IComponent {
     props: any;
+
+    constructor(props) {
+        this.props = props;
+    }
+
     render(): VNode {
         throw new Error("Method not implemented.");
     }

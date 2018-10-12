@@ -15,7 +15,8 @@ class BrowserRenderClass implements IRenderer{
     }
 
     public appendProps(e: HTMLElement, props: any) {
-        Object.keys(props).forEach(k => {
+        const blackList = ['children'];
+        Object.keys(props).filter(e => !blackList.includes(e)).forEach(k => {
             if (shouldAddEventListener(k)) {
                 e.addEventListener(k.substring(2).toLowerCase(), props[k]);
             } else {

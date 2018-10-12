@@ -4,8 +4,10 @@ Deadly simple react implementation
 TODOS
 ---
 
+- life cycles
 - event system
-- fiber
+- diff
+- security issue
 
 References
 ----
