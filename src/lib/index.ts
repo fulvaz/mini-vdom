@@ -8,7 +8,7 @@ import { isClass } from "./utils";
 // children will transform by this function too
 // node: base types, class, function, object, array, VNode
 export function h(node: string | Function, props: any = {}, ...children): IVNode {
-    // capitalied word pass to node will be resolved as variable
+    // capitalized word pass to node will be resolved as variable
     if (children.length !== 0) {
         props.children = children.map(c => {
             if (c instanceof VNode) {
