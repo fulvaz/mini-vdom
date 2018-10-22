@@ -71,6 +71,7 @@ export function render(node: IVNode, container) {
             return p;
         }
         case VNodeType.CLASS: {
+            // TODO: move to h function
             node.instance = new node.klass(node.props);
             node.context = node.instance;
             // FIXME: may invalid after uglify
