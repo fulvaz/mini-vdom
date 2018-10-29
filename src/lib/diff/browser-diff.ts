@@ -1,6 +1,6 @@
 import { IDiff } from 'lib/diff/i-diff';
 import { attr2Map, getEvtBinding, isServer, ifEventProp } from 'lib/utils';
-import { VNode } from 'lib/vnode';
+import { VNode, VNodeType } from 'lib/vnode';
 import { RendererFactory } from 'lib/renderer/renderer-factory';
 
 
@@ -20,21 +20,53 @@ export class BrowserDiff implements IDiff {
         }
 
         // prop comparing & event comparing
-        const propsOld = {...attr2Map(dom.attributes), ...getEvtBinding(dom)};
+        const propsOld = { ...attr2Map(dom.attributes), ...getEvtBinding(dom) };
         const propsNew = Object.entries(vnodeNew.props)
             .filter(([k, v]) => {
                 return k !== 'children';
             })
-            .map(([k, v]) => {
-                return v;
-            });
+            .reduce((p, [k, v]) => {
+                return {
+                    ...p,
+                    [k]: v,
+                }
+            }, {});
+            
         this.diffProps(propsOld, propsNew, dom);
 
         // children comparing
         const vnodesNew = vnodeNew.props.children;
-        const childrenOld = [...(dom.children as any)];
+        const childrenOld = [...(dom.childNodes as any)];
         vnodesNew.forEach((vnodeNew, idx) => {
-            this.diff(childrenOld[idx], vnodeNew);
+            // TODO: key
+            const childDomOld = childrenOld[idx];
+            // 4. !childDomOld add new node
+            if (!childDomOld) {
+                const domNew = RendererFactory.getRenderer().renderVNode(vnodeNew);
+                dom.appendChild(domNew);
+                return;
+            }
+            // 1. both text, update text
+            // textContent: use on text node
+            // innerText: use on element
+            if (childDomOld.nodeType === Node.TEXT_NODE && vnodeNew.type === VNodeType.TEXT && childDomOld.textContent !== vnodeNew.tag) {
+                childDomOld.textContent = vnodeNew.tag;
+                return
+            }
+            // 2. both element, call this.diff
+            if (childDomOld.nodeType === Node.ELEMENT_NODE && vnodeNew.type === VNodeType.ELEMENT) {
+                this.diff(childDomOld, vnodeNew);
+                return
+            }
+            // 3. different type, remove and replace with new
+            if ((childDomOld.nodeType === Node.TEXT_NODE && vnodeNew.type !== VNodeType.TEXT) ||
+                (childDomOld.nodeType === Node.ELEMENT_NODE && vnodeNew.type !== VNodeType.ELEMENT)
+            ) {
+                const domNew = RendererFactory.getRenderer().renderVNode(vnodeNew);
+                dom.replaceChild(domNew, childDomOld);
+                return
+            }
+            
         });
 
     }

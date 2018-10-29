@@ -22,7 +22,7 @@ class A extends Component {
         )
     }
 
-    handleClick() {
+    handleClick = () => {
         console.log('click');
         this.setState({
             s: 'updated',

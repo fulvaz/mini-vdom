@@ -31,8 +31,6 @@ export abstract class Component implements IComponent {
             ...state,
         }
 
-
-
         this.vnode = this.render();
         this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode);
         
@@ -44,9 +42,6 @@ export abstract class Component implements IComponent {
         // The developer can hint at which child elements may be stable across different renders with a key prop.
 
         // 3. keys help react to identify if a node is new
-
-
-
     }
 
 
