@@ -1,15 +1,20 @@
-import { VNode } from "lib/vnode";
+import { IVNode, VNode } from 'lib/vnode';
+import { DiffFactory } from 'lib/diff/diff-factory';
 
 export interface IComponent {
     render(): VNode;
     setState();
     props: any;
+    vnode: IVNode;
+    rendered: any;
 
     // TODO: lifecycle hooks
 }
 
 export abstract class Component implements IComponent {
     props: any;
+    vnode: IVNode;
+    rendered: any;
 
     constructor(props) {
         this.props = props;
@@ -23,9 +28,8 @@ export abstract class Component implements IComponent {
         // fiber, pause in reconciliation
 
         // 1. call render and get a new node
-        const vnodeNew = this.render();
-        
-
+        this.vnode = this.render();
+        this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode);
 
         // 2. compare and transform
         // Two elements of different types will produce different trees.
@@ -34,7 +38,7 @@ export abstract class Component implements IComponent {
         // 3. keys help react to identify if a node is new
 
 
-        throw new Error("Method not implemented.");
+
     }
 
 

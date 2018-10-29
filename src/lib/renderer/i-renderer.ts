@@ -5,4 +5,5 @@ export interface IRenderer {
     createElement(type: string);
     appendChild(child: any, parent: any);
     render(node: IVNode, container: any);
+    renderVNode(node: IVNode);
 }

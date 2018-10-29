@@ -40,6 +40,7 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
                 const vnode = new VNode(VNodeType.CLASS, (node as any).name, props);
                 vnode.klass = node;
                 vnode.instance = new vnode.klass(vnode.props);
+                vnode.instance.vnode = vnode;
                 return vnode;
             } else {
                 return new VNode(VNodeType.ELEMENT, (node as any).name, props);

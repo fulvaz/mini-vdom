@@ -1,4 +1,4 @@
-import { shouldAddEventListener } from '../utils';
+import { ifEventProp } from '../utils';
 import { IRenderer } from 'lib/renderer/i-renderer';
 import { IVNode, VNodeType } from 'lib/vnode';
 import { RendererFactory } from 'lib/renderer/renderer-factory';
@@ -18,8 +18,9 @@ export class BrowserRender implements IRenderer {
     public appendProps(e: HTMLElement, props: any) {
         const blackList = ['children'];
         Object.keys(props).filter(e => !blackList.includes(e)).forEach(k => {
-            if (shouldAddEventListener(k)) {
-                e.addEventListener(k.substring(2).toLowerCase(), props[k]);
+            if (ifEventProp(k)) {
+                // instead of addEventListener, use a simple solution to simplify diff algorithm
+                e[k.toLowerCase()] = props[k];
             } else {
                 if (k === 'className') {
                     e.setAttribute('class', props[k]);
@@ -41,16 +42,18 @@ export class BrowserRender implements IRenderer {
 
     // TODO: handle xss issues see https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html
     // render VNodes to platform specific content
-    render(node: IVNode, container) {
+    render(node: IVNode, container: HTMLElement) {
+        container.appendChild(this.renderVNode(node));
+    }
+
+    renderVNode(node: IVNode) {
         switch (node.type) {
             case VNodeType.TEXT: {
                 const p = this.createTextNode(node.tag);
-                this.appendChild(p, container);
                 return p;
             }
             case VNodeType.ELEMENT: {
                 const p = this.createElement(node.tag);
-                this.appendChild(p, container);
                 this.renderChildren(node, p);
                 this.appendProps(p, node.props);
                 // TODO: split a function to append DOM
@@ -59,11 +62,12 @@ export class BrowserRender implements IRenderer {
             case VNodeType.CLASS: {
                 // FIXME: may invalid after uglify
                 const innerVNode = node.instance.render();
-                return render(innerVNode, container);
+                const p = this.renderVNode(innerVNode);
+                node.instance.rendered = p;
+                return p;
             }
             default: {
                 const p = this.createTextNode('debug: ops, your node is not belong to any type');
-                this.appendChild(p, container);
                 return p;
             }
         }

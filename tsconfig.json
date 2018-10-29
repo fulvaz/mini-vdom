@@ -3,6 +3,7 @@
         "noImplicitAny": false,
         "removeComments": true,
         "jsx": "react",
+        "downlevelIteration": true,
         "sourceMap": true,
         "jsxFactory": "h",
         "baseUrl": ".",
