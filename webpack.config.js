@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 module.exports = {
     mode: "development", // "production" | "development" | "none"  // Chosen mode tells webpack to use its built-in optimizations accordingly.
-    entry: "./src/index.tsx", // string | object | array  // defaults to ./src
+    entry: "./src/index.jsx", // string | object | array  // defaults to ./src
     context: path.resolve(__dirname),
     // Here the application starts executing
     // and webpack starts bundling
@@ -81,7 +81,7 @@ module.exports = {
         /* Advanced resolve configuration (click to show) */
 },
 
-    devtool: "inline-source-map", // enum  // enhance debugging by adding meta info for the browser devtools
+    devtool: "source-map", // enum  // enhance debugging by adding meta info for the browser devtools
     // source-map most detailed at the expense of build speed.
 
     serve: { //object

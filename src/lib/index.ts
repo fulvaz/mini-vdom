@@ -1,6 +1,6 @@
 import { VNode, VNodeType, IVNode } from "lib/vnode";
-import { BrowserRender } from "lib/browser";
 import { isClass } from "./utils";
+import { RendererFactory } from 'lib/renderer/renderer-factory';
 
 // Done: children will needs to treat as expression like Array, function
 // Done: support stateless component
@@ -39,6 +39,7 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
             if (isClass(node)) {
                 const vnode = new VNode(VNodeType.CLASS, (node as any).name, props);
                 vnode.klass = node;
+                vnode.instance = new vnode.klass(vnode.props);
                 return vnode;
             } else {
                 return new VNode(VNodeType.ELEMENT, (node as any).name, props);
@@ -54,49 +55,6 @@ export function h(node: string | Function, props: any = {}, ...children): IVNode
 }
 
 
-// TODO: handle xss issues see https://stackoverflow.com/questions/7381974/which-characters-need-to-be-escaped-on-html
-// render VNodes to platform specific content
 export function render(node: IVNode, container) {
-    switch (node.type) {
-        case VNodeType.TEXT: {
-            const p = BrowserRender.createTextNode(node.tag);
-            BrowserRender.appendChild(p, container);
-            return p;
-        }
-        case VNodeType.ELEMENT: {
-            const p = BrowserRender.createElement(node.tag);
-            BrowserRender.appendChild(p, container);
-            renderChildren(node, p);
-            BrowserRender.appendProps(p, node.props);
-            return p;
-        }
-        case VNodeType.CLASS: {
-            // TODO: move to h function
-            node.instance = new node.klass(node.props);
-            node.context = node.instance;
-            // FIXME: may invalid after uglify
-            const innerVNode = node.instance.render();
-            return render(innerVNode, container);
-        }
-        default: {
-            const p = BrowserRender.createTextNode('debug: ops, your node is not belong to any type');
-            BrowserRender.appendChild(p, container);
-            return p;
-        }
-    }
-    
+    return RendererFactory.getRenderer().render(node, container);
 }
-
-function renderChildren(node: IVNode, container: HTMLElement) {
-    const children = node.props.children || [];
-    children.forEach(e => {
-        render(e, container);
-        // container.appendChild(c);
-    });
-    return container;
-}
-
-
-// append
-// remove
-// replace
