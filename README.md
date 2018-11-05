@@ -21,7 +21,7 @@ TODOS
 
 - life cycles
 - event system
-- diff
+- diff done
 - security issue
 - implement 'ref'
 
