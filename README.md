@@ -20,6 +20,24 @@ TODOS
 ---
 
 - life cycles
+  - mount
+  - constructor
+  - getDerivedStateFromProps()
+  - render
+  - componentDidMount
+  
+  - update
+  - getDerivedStateFromProps
+  - shouldComponentUpdate()
+  - render()
+  - getSnapshotBeforeUpdate()
+  - componentDidUpdate()
+
+  - unmount
+  - componentWillUnmount()
+
+  - forceUpdate()
+
 - event system
 - diff done
 - security issue
