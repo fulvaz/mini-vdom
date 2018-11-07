@@ -8,6 +8,8 @@ export interface IComponent {
     vnode: IVNode;
     rendered: any;
     state: any;
+    forceUpdate(cb?);
+    shouldComponentUpdate(nextProps, nextState, nextContext);
 
     // TODO: lifecycle hooks
 }
@@ -17,6 +19,7 @@ export abstract class Component implements IComponent {
     vnode: IVNode;
     rendered: any;
     state: any = {};
+    
 
     constructor(props) {
         this.props = props;
@@ -31,8 +34,7 @@ export abstract class Component implements IComponent {
             ...state,
         }
 
-        this.vnode = this.render();
-        this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode);
+        this.renderComponent();
         
         // 1. call render and get a new node
         // TODO diff here! do the reconciliation
@@ -42,6 +44,15 @@ export abstract class Component implements IComponent {
         // The developer can hint at which child elements may be stable across different renders with a key prop.
 
         // 3. keys help react to identify if a node is new
+    }
+
+    forceUpdate(cb?) {
+        this.renderComponent(true);
+    }
+
+    private renderComponent(ifForceRerender = false) {
+        this.vnode = this.render();
+        this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode);
     }
 
 

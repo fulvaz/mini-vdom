@@ -19,6 +19,8 @@ how to dev
 TODOS
 ---
 
+- implement context
+
 - life cycles
   - mount
   - constructor
