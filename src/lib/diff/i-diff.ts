@@ -1,3 +1,5 @@
+import { VNode } from '../vnode';
+
 export interface IDiff {
-    diff(renderer, vnode);
+    diff(renderer, vnodeNew: VNode, vnodeOld: VNode);
 }

@@ -11,7 +11,7 @@ export class BrowserDiff implements IDiff {
      * rule1: if VNode type !== dom tyoe, children will be destroyed and replace with newly renderer node;
      * rule2:
      * */
-    diff(dom: HTMLElement, vnodeNew: VNode) {
+    diff(dom: HTMLElement, vnodeNew: VNode, vnodesOld: VNode) {
         // impl rule1
         if (dom.nodeName.toLowerCase() !== vnodeNew.tag) {
             const domNew = RendererFactory.getRenderer().renderVNode(vnodeNew);
@@ -55,7 +55,7 @@ export class BrowserDiff implements IDiff {
             }
             // 2. both element, call this.diff
             if (childDomOld.nodeType === Node.ELEMENT_NODE && vnodeNew.type === VNodeType.ELEMENT) {
-                this.diff(childDomOld, vnodeNew);
+                this.diff(childDomOld, vnodeNew, vnodesOld);
                 return
             }
             // 3. different type, remove and replace with new

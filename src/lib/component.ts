@@ -15,20 +15,48 @@ export interface IComponent {
 }
 
 export abstract class Component implements IComponent {
-    props: any;
-    vnode: IVNode;
+    
+    private _props: any;
+    public get props(): any {
+        return this._props;
+    }
+    public set props(value: any) {
+        this.state = {
+            ...this.state,
+            ...Component.getDerivedStateFromProps(this._props, this.prevState),
+        };
+        this.prevProps = this._props;
+        this._props = value;
+    }
+    private _vnode: IVNode;
+    public get vnode(): IVNode {
+        return this._vnode;
+    }
+    public set vnode(value: IVNode) {
+        this.prevVnode = this._vnode;
+        this._vnode = value;
+    }
+    prevVnode: IVNode;
     rendered: any;
     state: any = {};
+
+    // ha, prevProps is not that 'prev'
+    private prevProps: any;
+    private prevState: any;
     
 
     constructor(props) {
         this.props = props;
     }
 
-    abstract render(): VNode
+    abstract render(): VNode;
     
     // TODO: setState!
     setState(state) {
+        this.prevState = {
+            ...this.state,
+        };
+
         this.state = {
             ...this.state,
             ...state,
@@ -51,8 +79,37 @@ export abstract class Component implements IComponent {
     }
 
     private renderComponent(ifForceRerender = false) {
+        if (!this.shouldComponentUpdate(this.prevProps, this.prevState, {}) && !ifForceRerender) {
+            return;
+        }
+        
+        const snapshot = this.getSnapshotBeforeUpdate(this.prevProps, this.prevState, {});
+
         this.vnode = this.render();
-        this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode);
+        this.rendered = DiffFactory.getDiff().diff(this.rendered, this.vnode, this.prevVnode);
+
+        this.componentDidUpdate(this.prevProps, this.prevState, snapshot);
+    }
+
+    shouldComponentUpdate(nextProps: any, nextState: any, nextContext: any) {
+        return true;
+    }
+
+    getSnapshotBeforeUpdate(nextProps, nextState, nextContext) {
+        return null;
+    }
+
+    public static getDerivedStateFromProps<T>(prevProps, prevState): T {
+        let a: T;
+        return a;
+    }
+
+    public componentDidUpdate(prevProps, prevState, snapshot) {
+
+    }
+
+    public componentWillUnmount() {
+
     }
 
 
